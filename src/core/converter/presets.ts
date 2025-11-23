@@ -7,6 +7,7 @@
 
 import type { PresetType, PresetResult } from './types';
 import { convertMarkdownToHtml } from './markdown';
+import { formatForLinkedIn } from './unicode-formatter';
 
 /**
  * Apply platform-specific preset transformation
@@ -41,42 +42,41 @@ export async function applyPreset(
  * LinkedIn Preset
  *
  * Optimizations:
+ * - Convert markdown formatting to Unicode styled text (**bold** → 𝗯𝗼𝗹𝗱)
+ * - Convert lists to Unicode bullets (- item → • item)
  * - Force double newlines between paragraphs
  * - Move hashtags to end of post
  * - Clean up extra spaces
- * - Preserve links and formatting
  */
 async function applyLinkedInPreset(
   markdown: string
 ): Promise<PresetResult> {
   const notes: string[] = [];
-  let processed = markdown;
 
-  // Step 1: Normalize paragraph spacing (force \n\n)
-  const originalNewlines = processed;
-  processed = processed.replace(/\n{1}(?!\n)/g, '\n\n');
-  if (processed !== originalNewlines) {
-    notes.push('Normalized paragraph spacing to double newlines');
+  // Use Unicode formatter for LinkedIn-compatible text
+  const processed = formatForLinkedIn(markdown);
+
+  // Count formatting transformations
+  const boldCount = (markdown.match(/\*\*(.+?)\*\*/g) || []).length;
+  const italicCount = (markdown.match(/\*(.+?)\*/g) || []).length;
+  const listCount = (markdown.match(/^[\s]*[-*]\s+/gm) || []).length;
+  const hashtagCount = (markdown.match(/#[\w]+/g) || []).length;
+
+  if (boldCount > 0) {
+    notes.push(`Converted ${boldCount} bold text(s) to Unicode 𝗯𝗼𝗹𝗱`);
   }
-
-  // Step 2: Extract and move hashtags to end
-  const hashtagRegex = /#[\w]+/g;
-  const hashtags: string[] = [];
-  processed = processed.replace(hashtagRegex, (match) => {
-    hashtags.push(match);
-    return ''; // Remove from original position
-  });
-
-  if (hashtags.length > 0) {
-    // Add hashtags at the end with spacing
-    processed = processed.trim() + '\n\n' + hashtags.join(' ');
-    notes.push(`Moved ${hashtags.length} hashtag(s) to end`);
+  if (italicCount > 0) {
+    notes.push(`Converted ${italicCount} italic text(s) to Unicode 𝘪𝘵𝘢𝘭𝘪𝘤`);
   }
+  if (listCount > 0) {
+    notes.push(`Converted ${listCount} list item(s) to • bullets`);
+  }
+  if (hashtagCount > 0) {
+    notes.push(`Moved ${hashtagCount} hashtag(s) to end`);
+  }
+  notes.push('Normalized paragraph spacing to double newlines');
 
-  // Step 3: Clean up multiple spaces
-  processed = processed.replace(/ {2,}/g, ' ');
-
-  // Step 4: Convert to HTML
+  // Convert to HTML for preview (using processed Unicode text)
   const html = await convertMarkdownToHtml(processed, {
     gfm: true,
     sanitize: true,

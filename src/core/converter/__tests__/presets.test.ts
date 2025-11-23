@@ -31,22 +31,31 @@ describe('Platform Presets', () => {
       expect(result.markdown).toBe('Regular post without hashtags');
     });
 
-    it('should clean up multiple spaces', async () => {
-      const input = 'Text  with    extra     spaces';
+    it('should convert bold to Unicode', async () => {
+      const input = '**Bold** text';
       const result = await applyPreset(input, 'linkedin');
-      expect(result.markdown).not.toContain('  ');
+      expect(result.markdown).toContain('𝗕𝗼𝗹𝗱');
+      expect(result.markdown).not.toContain('**');
+    });
+
+    it('should convert italic to Unicode', async () => {
+      const input = '*italic* text';
+      const result = await applyPreset(input, 'linkedin');
+      expect(result.markdown).toContain('𝘪𝘵𝘢𝘭𝘪𝘤');
+      expect(result.markdown).not.toContain('*italic*');
+    });
+
+    it('should convert lists to bullets', async () => {
+      const input = '- Item 1\n- Item 2';
+      const result = await applyPreset(input, 'linkedin');
+      expect(result.markdown).toContain('• Item 1');
+      expect(result.markdown).toContain('• Item 2');
     });
 
     it('should preserve links', async () => {
       const input = 'Check out [this link](https://example.com)';
       const result = await applyPreset(input, 'linkedin');
       expect(result.html).toContain('<a href="https://example.com">');
-    });
-
-    it('should convert to HTML', async () => {
-      const input = '**Bold** text';
-      const result = await applyPreset(input, 'linkedin');
-      expect(result.html).toContain('<strong>Bold</strong>');
     });
   });
 

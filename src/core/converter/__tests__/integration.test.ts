@@ -90,8 +90,8 @@ describe('Converter Integration', () => {
         preset: 'linkedin',
       });
       // Preprocessing: *bold* → **bold**
-      // LinkedIn: move hashtag to end
-      expect(result.html).toContain('<strong>bold</strong>');
+      // LinkedIn: **bold** → 𝗯𝗼𝗹𝗱, move hashtag to end
+      expect(result.preset?.markdown).toContain('𝗯𝗼𝗹𝗱');
       expect(result.preset?.markdown).toMatch(/#tag$/);
     });
 

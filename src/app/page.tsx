@@ -8,7 +8,16 @@ import { PresetSelector } from '@/components/editor/PresetSelector';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
 import { Separator } from '@/components/ui/separator';
-import { Copy, Check } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Copy, Check, FileText, Download } from 'lucide-react';
 import { convert, type PresetType, type ConverterResult } from '@/core/converter';
 
 export default function Home() {
@@ -17,6 +26,8 @@ export default function Home() {
   const [preset, setPreset] = useState<PresetType | null>(null);
   const [whatsappEnabled, setWhatsappEnabled] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedText, setCopiedText] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
   // Convert markdown whenever it changes
   useEffect(() => {
@@ -41,20 +52,56 @@ export default function Home() {
     if (!result?.html) return;
 
     try {
+      // Try modern Clipboard API with both HTML and plain text
+      const htmlBlob = new Blob([result.html], { type: 'text/html' });
+      const textBlob = new Blob([result.html], { type: 'text/plain' });
+
       await navigator.clipboard.write([
         new ClipboardItem({
-          'text/html': new Blob([result.html], { type: 'text/html' }),
-          'text/plain': new Blob([result.markdown], { type: 'text/plain' }),
+          'text/html': htmlBlob,
+          'text/plain': textBlob,
         }),
       ]);
+      
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      // Fallback to plain text
-      await navigator.clipboard.writeText(result.html);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      // Fallback: copy HTML as plain text
+      try {
+        await navigator.clipboard.writeText(result.html);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (fallbackError) {
+        console.error('Failed to copy:', fallbackError);
+      }
     }
+  }, [result]);
+
+  const handleCopyText = useCallback(async () => {
+    if (!result?.markdown) return;
+
+    try {
+      await navigator.clipboard.writeText(result.markdown);
+      setCopiedText(true);
+      setTimeout(() => setCopiedText(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy text:', error);
+    }
+  }, [result]);
+
+  const handleExportMarkdown = useCallback(() => {
+    if (!result?.markdown) return;
+
+    const blob = new Blob([result.markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'export.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setExportDialogOpen(false);
   }, [result]);
 
   const handleInsert = useCallback(
@@ -64,6 +111,7 @@ export default function Home() {
     },
     []
   );
+  
 
   return (
     <div className="h-screen flex flex-col">
@@ -103,6 +151,55 @@ export default function Home() {
               </>
             )}
           </Button>
+          <Button
+            onClick={handleCopyText}
+            size="sm"
+            variant="outline"
+            className="gap-2"
+            disabled={!result?.markdown}
+          >
+            {copiedText ? (
+              <>
+                <Check className="h-4 w-4" />
+                Copied!
+              </>
+            ) : (
+              <>
+                <FileText className="h-4 w-4" />
+                Copy Text
+              </>
+            )}
+          </Button>
+          <Dialog open={exportDialogOpen} onOpenChange={setExportDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-2"
+                disabled={!result?.markdown}
+              >
+                <Download className="h-4 w-4" />
+                Export .md
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Export Markdown</DialogTitle>
+                <DialogDescription>
+                  Download your optimized markdown as a .md file.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setExportDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleExportMarkdown}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </header>
 
