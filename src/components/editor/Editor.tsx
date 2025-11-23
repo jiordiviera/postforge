@@ -1,8 +1,9 @@
-'use client';
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { useEffect, useRef } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface EditorProps {
   value: string;
@@ -12,7 +13,7 @@ interface EditorProps {
 }
 
 const AUTOSAVE_INTERVAL = 1000; // 1 second
-const STORAGE_KEY = 'md-draft-v1';
+const STORAGE_KEY = "md-draft-v1";
 
 export function Editor({ value, onChange, onCopy, placeholder }: EditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -40,25 +41,25 @@ export function Editor({ value, onChange, onCopy, placeholder }: EditorProps) {
       const isMod = e.metaKey || e.ctrlKey;
 
       // Ctrl/Cmd + B: Bold
-      if (isMod && e.key === 'b') {
+      if (isMod && e.key === "b") {
         e.preventDefault();
-        wrapSelection('**', '**');
+        wrapSelection("**", "**");
       }
 
       // Ctrl/Cmd + I: Italic
-      if (isMod && e.key === 'i') {
+      if (isMod && e.key === "i") {
         e.preventDefault();
-        wrapSelection('*', '*');
+        wrapSelection("*", "*");
       }
 
       // Ctrl/Cmd + Shift + C: Code
-      if (isMod && e.shiftKey && e.key === 'c') {
+      if (isMod && e.shiftKey && e.key === "c") {
         e.preventDefault();
-        wrapSelection('`', '`');
+        wrapSelection("`", "`");
       }
 
       // Ctrl/Cmd + Enter: Copy HTML
-      if (isMod && e.key === 'Enter') {
+      if (isMod && e.key === "Enter") {
         e.preventDefault();
         onCopy?.();
       }
@@ -66,8 +67,8 @@ export function Editor({ value, onChange, onCopy, placeholder }: EditorProps) {
 
     const textarea = textareaRef.current;
     if (textarea) {
-      textarea.addEventListener('keydown', handleKeyDown);
-      return () => textarea.removeEventListener('keydown', handleKeyDown);
+      textarea.addEventListener("keydown", handleKeyDown);
+      return () => textarea.removeEventListener("keydown", handleKeyDown);
     }
   }, [onCopy]);
 
@@ -87,10 +88,7 @@ export function Editor({ value, onChange, onCopy, placeholder }: EditorProps) {
     // Restore cursor position
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(
-        start + before.length,
-        end + before.length
-      );
+      textarea.setSelectionRange(start + before.length, end + before.length);
     }, 0);
   };
 
@@ -100,7 +98,7 @@ export function Editor({ value, onChange, onCopy, placeholder }: EditorProps) {
         ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder || 'Write your markdown here...'}
+        placeholder={placeholder || "Write your markdown here..."}
         className="min-h-full resize-none border-0 focus-visible:ring-0 font-mono text-base p-6 leading-relaxed"
         aria-label="Markdown editor"
       />

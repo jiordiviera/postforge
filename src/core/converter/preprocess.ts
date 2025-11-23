@@ -86,7 +86,6 @@ function protectCodeBlocks(text: string): {
   // Protect fenced code blocks (``` or ~~~)
   const fenceRegex = /```[\s\S]*?```|~~~[\s\S]*?~~~/g;
   let match;
-  let offset = 0;
 
   while ((match = fenceRegex.exec(text)) !== null) {
     const placeholder = `__PROTECTED_FENCE_${ranges.length}__`;
