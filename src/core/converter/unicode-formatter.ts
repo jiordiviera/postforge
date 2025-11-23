@@ -168,6 +168,10 @@ export function listToBullets(text: string): string {
 export function formatForLinkedIn(markdown: string): string {
   let formatted = markdown;
 
+  // Convert markdown headings to bold Unicode (LinkedIn doesn't support markdown headings)
+  // ### Heading → 𝗛𝗲𝗮𝗱𝗶𝗻𝗴
+  formatted = formatted.replace(/^#{1,6}\s+(.+)$/gm, (_, content) => toBold(content));
+
   // Convert markdown formatting to Unicode
   formatted = markdownToUnicode(formatted);
 

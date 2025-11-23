@@ -190,5 +190,23 @@ This is my post with *key points*:
       // Hex codes should NOT be at the end
       expect(result).not.toMatch(/#671de7.*$/);
     });
+
+    it('should convert markdown headings to Unicode bold', () => {
+      const input = `### Light mode (tokens)
+Some content here
+## Another heading`;
+
+      const result = formatForLinkedIn(input);
+
+      // Headings should be converted to bold Unicode
+      expect(result).toContain('𝗟𝗶𝗴𝗵𝘁');
+      expect(result).toContain('𝗺𝗼𝗱𝗲');
+      expect(result).toContain('𝗔𝗻𝗼𝘁𝗵𝗲𝗿');
+      expect(result).toContain('𝗵𝗲𝗮𝗱𝗶𝗻𝗴');
+
+      // No markdown heading symbols should remain
+      expect(result).not.toContain('###');
+      expect(result).not.toContain('##');
+    });
   });
 });
