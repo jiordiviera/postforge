@@ -83,16 +83,16 @@
 
 .dark {
   /* Design System Colors - Dark Mode */
-  --color-text: #f0f5f4;
-  --color-bg: #060908;
-  --color-primary: #6218e2;
-  --color-secondary: #0f6da3;
-  --color-accent: #167ce9;
-  --color-bg-light: #131615;
-  --color-surface: #0b0d0c;
-  --color-muted: #9aa09f;
-  --color-border: rgba(240, 245, 244, 0.06);
-  --color-success: #16a34a;
+  --color-text: #e5e7eb;
+  --color-bg: #0a0a0a;
+  --color-primary: #8b5cf6;
+  --color-secondary: #3b82f6;
+  --color-accent: #06b6d4;
+  --color-bg-light: #171717;
+  --color-surface: #18181b;
+  --color-muted: #71717a;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
 

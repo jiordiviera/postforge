@@ -56,26 +56,6 @@ async function applyLinkedInPreset(
   // Use Unicode formatter for LinkedIn-compatible text
   const processed = formatForLinkedIn(markdown);
 
-  // Count formatting transformations
-  const boldCount = (markdown.match(/\*\*(.+?)\*\*/g) || []).length;
-  const italicCount = (markdown.match(/\*(.+?)\*/g) || []).length;
-  const listCount = (markdown.match(/^[\s]*[-*]\s+/gm) || []).length;
-  const hashtagCount = (markdown.match(/#[\w]+/g) || []).length;
-
-  if (boldCount > 0) {
-    notes.push(`Converted ${boldCount} bold text(s) to Unicode 𝗯𝗼𝗹𝗱`);
-  }
-  if (italicCount > 0) {
-    notes.push(`Converted ${italicCount} italic text(s) to Unicode 𝘪𝘵𝘢𝘭𝘪𝘤`);
-  }
-  if (listCount > 0) {
-    notes.push(`Converted ${listCount} list item(s) to • bullets`);
-  }
-  if (hashtagCount > 0) {
-    notes.push(`Moved ${hashtagCount} hashtag(s) to end`);
-  }
-  notes.push('Normalized paragraph spacing to double newlines');
-
   // For LinkedIn preview: show the actual text that will be copied (plain Unicode text)
   // Wrap in basic HTML for display, preserving line breaks
   const html = `<div style="white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5;">${escapeHtml(processed)}</div>`;
