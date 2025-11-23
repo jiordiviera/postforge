@@ -1,17 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { Editor } from '@/components/editor/Editor';
-import { Toolbar } from '@/components/editor/Toolbar';
-import { PreviewPane } from '@/components/editor/PreviewPane';
-import { PresetSelector } from '@/components/editor/PresetSelector';
-import { Button } from '@/components/ui/button';
-import { Toggle } from '@/components/ui/toggle';
-import { Copy, Check } from 'lucide-react';
-import { convert, type PresetType, type ConverterResult } from '@/core/converter';
+import { useState, useEffect, useCallback } from "react";
+import { Editor } from "@/components/editor/Editor";
+import { Toolbar } from "@/components/editor/Toolbar";
+import { PreviewPane } from "@/components/editor/PreviewPane";
+import { PresetSelector } from "@/components/editor/PresetSelector";
+import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
+import { Copy, Check } from "lucide-react";
+import {
+  convert,
+  type PresetType,
+  type ConverterResult,
+} from "@/core/converter";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Home() {
-  const [markdown, setMarkdown] = useState('');
+  const [markdown, setMarkdown] = useState("");
   const [result, setResult] = useState<ConverterResult | null>(null);
   const [preset, setPreset] = useState<PresetType | null>(null);
   const [whatsappEnabled, setWhatsappEnabled] = useState(false);
@@ -44,30 +49,23 @@ export default function Home() {
       setCopiedText(true);
       setTimeout(() => setCopiedText(false), 2000);
     } catch (error) {
-      console.error('Failed to copy text:', error);
+      console.error("Failed to copy text:", error);
     }
   }, [result]);
 
-  const handleInsert = useCallback(
-    (before: string, after: string) => {
-      // Insert at current cursor position or at end
-      setMarkdown((prev) => prev + before + after);
-    },
-    []
-  );
-  
+  const handleInsert = useCallback((before: string, after: string) => {
+    // Insert at current cursor position or at end
+    setMarkdown((prev) => prev + before + after);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <header className="border-b bg-background sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <h1 className="text-xl font-bold">PostForge</h1>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
-              PostForge
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
+            <PresetSelector value={preset} onChange={setPreset} />
             <Toggle
               pressed={whatsappEnabled}
               onPressedChange={setWhatsappEnabled}
@@ -76,27 +74,29 @@ export default function Home() {
             >
               WhatsApp
             </Toggle>
-            <PresetSelector value={preset} onChange={setPreset} />
           </div>
         </div>
       </header>
 
-      {/* Main Content - Centered Layout */}
-      <main className="flex-1 py-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-2">LinkedIn Text Formatter</h2>
-            <p className="text-muted-foreground">
-              Format your LinkedIn text with bold, italic and more styles!
-            </p>
-          </div>
+      {/* Hero Section */}
+      <div className="border-b bg-background">
+        <div className="max-w-4xl mx-auto px-6 py-12 text-center">
+          <h2 className="text-4xl font-bold mb-3">LinkedIn Text Formatter</h2>
+          <p className="text-lg text-muted-foreground">
+            Format your LinkedIn text with bold, italic and more styles!
+          </p>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Main Content - Single Column Centered */}
+      <main className="flex-1 bg-muted/20 py-8">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr),400px] gap-8">
             {/* Editor Section */}
-            <div className="space-y-4">
-              <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
+            <div>
+              <div className="bg-background rounded-2xl border shadow-lg overflow-hidden">
                 <Toolbar onInsert={handleInsert} />
-                <div className="h-[500px]">
+                <div className="h-[600px]">
                   <Editor
                     value={markdown}
                     onChange={setMarkdown}
@@ -104,10 +104,11 @@ export default function Home() {
                     placeholder="Write your post..."
                   />
                 </div>
-                <div className="border-t p-4 flex items-center justify-between bg-muted/30">
+                <div className="border-t px-6 py-4 flex items-center gap-3">
                   <Button
                     onClick={handleCopyText}
                     variant="default"
+                    size="lg"
                     className="gap-2"
                     disabled={!result?.markdown}
                   >
@@ -127,29 +128,36 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Preview Section */}
-            <div className="space-y-4">
-              <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
-                <div className="border-b bg-muted/30 px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center font-semibold">
+            {/* Preview Section - LinkedIn Card Style */}
+            <ScrollArea className="h-full lg:sticky lg:top-24">
+              <div className="bg-background rounded-2xl border shadow-lg overflow-hidden">
+                <div className="border-b px-6 py-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-lg">
                       U
                     </div>
-                    <div>
-                      <p className="font-semibold text-sm">Your Name</p>
-                      <p className="text-xs text-muted-foreground">Growth @ PostForge</p>
-                      <p className="text-xs text-muted-foreground">Now</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold">Your Name</p>
+                      <p className="text-sm text-muted-foreground">
+                        Growth @ PostForge
+                      </p>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1">
+                        Now • <span className="text-xs">🌍</span>
+                      </p>
                     </div>
                   </div>
                 </div>
-                <div className="h-[500px]">
+                <div className="max-h-[600px]">
                   <PreviewPane
-                    html={result?.html || '<p class="text-muted-foreground">Start typing to see preview...</p>'}
+                    html={
+                      result?.html ||
+                      '<p class="text-muted-foreground">Start typing to see preview...</p>'
+                    }
                     notes={result?.preset?.notes}
                   />
                 </div>
               </div>
-            </div>
+            </ScrollArea>
           </div>
         </div>
       </main>
