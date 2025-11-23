@@ -12,10 +12,10 @@ export function PreviewPane({ html, notes }: PreviewPaneProps) {
   return (
     <div className="h-full flex flex-col">
       {notes && notes.length > 0 && (
-        <div className="px-4 py-2 bg-muted/50 border-b">
-          <p className="text-xs text-muted-foreground">
+        <div className="px-6 py-3 bg-muted/30 border-b">
+          <p className="text-xs text-muted-foreground leading-relaxed">
             {notes.map((note, i) => (
-              <span key={i}>
+              <span key={i} className="inline-block">
                 {note}
                 {i < notes.length - 1 && ' • '}
               </span>
@@ -24,13 +24,13 @@ export function PreviewPane({ html, notes }: PreviewPaneProps) {
         </div>
       )}
       <ScrollArea className="flex-1">
-        <Card className="m-4 p-6 border-0 shadow-none">
+        <div className="p-6">
           <div
-            className="prose dark:prose-invert max-w-none"
+            className="prose dark:prose-invert max-w-none leading-relaxed"
             dangerouslySetInnerHTML={{ __html: html }}
             aria-label="Preview"
           />
-        </Card>
+        </div>
       </ScrollArea>
     </div>
   );

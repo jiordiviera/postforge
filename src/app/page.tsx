@@ -61,11 +61,11 @@ export default function Home() {
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
-      <header className="border-b h-14 flex items-center justify-between px-4 bg-background">
-        <div className="flex items-center gap-2">
-          <h1 className="text-lg font-semibold">PostForge</h1>
+      <header className="border-b h-16 flex items-center justify-between px-6 bg-background/95 backdrop-blur">
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">PostForge</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Toggle
             pressed={whatsappEnabled}
             onPressedChange={setWhatsappEnabled}
@@ -112,9 +112,9 @@ export default function Home() {
         </div>
 
         {/* Preview Panel */}
-        <div className="flex-1 flex flex-col bg-muted/30">
-          <div className="h-12 border-b flex items-center px-4 bg-background">
-            <h2 className="text-sm font-medium text-muted-foreground">
+        <div className="flex-1 flex flex-col bg-muted/20">
+          <div className="h-14 border-b flex items-center px-6 bg-background/80 backdrop-blur">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
               Preview
             </h2>
           </div>

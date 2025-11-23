@@ -95,17 +95,15 @@ export function Editor({ value, onChange, onCopy, placeholder }: EditorProps) {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <ScrollArea className="flex-1">
-        <Textarea
-          ref={textareaRef}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder || 'Write your markdown here...'}
-          className="min-h-[60vh] resize-none border-0 focus-visible:ring-0 font-mono text-base p-4"
-          aria-label="Markdown editor"
-        />
-      </ScrollArea>
-    </div>
+    <ScrollArea className="h-full">
+      <Textarea
+        ref={textareaRef}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder || 'Write your markdown here...'}
+        className="min-h-full resize-none border-0 focus-visible:ring-0 font-mono text-base p-6 leading-relaxed"
+        aria-label="Markdown editor"
+      />
+    </ScrollArea>
   );
 }
