@@ -52,10 +52,12 @@ describe('Platform Presets', () => {
       expect(result.markdown).toContain('• Item 2');
     });
 
-    it('should preserve links', async () => {
+    it('should preserve links as plain text', async () => {
       const input = 'Check out [this link](https://example.com)';
       const result = await applyPreset(input, 'linkedin');
-      expect(result.html).toContain('<a href="https://example.com">');
+      // LinkedIn preview shows plain text, not clickable links
+      expect(result.html).toContain('Check out [this link](https://example.com)');
+      expect(result.markdown).toContain('[this link](https://example.com)');
     });
   });
 

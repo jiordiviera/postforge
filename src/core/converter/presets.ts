@@ -76,17 +76,27 @@ async function applyLinkedInPreset(
   }
   notes.push('Normalized paragraph spacing to double newlines');
 
-  // Convert to HTML for preview (using processed Unicode text)
-  const html = await convertMarkdownToHtml(processed, {
-    gfm: true,
-    sanitize: true,
-  });
+  // For LinkedIn preview: show the actual text that will be copied (plain Unicode text)
+  // Wrap in basic HTML for display, preserving line breaks
+  const html = `<div style="white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.5;">${escapeHtml(processed)}</div>`;
 
   return {
     markdown: processed,
     html,
     notes,
   };
+}
+
+/**
+ * Escape HTML special characters for safe display
+ */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 /**
