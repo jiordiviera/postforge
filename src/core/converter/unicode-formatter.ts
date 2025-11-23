@@ -110,10 +110,18 @@ export function toBoldItalic(text: string): string {
 /**
  * Convert markdown formatting to Unicode styled text
  * Handles: **bold**, *italic*, ***bold italic***
+ * Protects code blocks and inline code from transformation
  */
 export function markdownToUnicode(text: string): string {
-  let result = text;
+  // Step 1: Protect inline code (`code`)
+  const codeBlocks: string[] = [];
+  let result = text.replace(/`([^`]+)`/g, (match) => {
+    const placeholder = `\u0000CODE${codeBlocks.length}\u0000`; // Use null char as delimiter
+    codeBlocks.push(match);
+    return placeholder;
+  });
 
+  // Step 2: Apply Unicode transformations
   // Bold italic (***text***)
   result = result.replace(/\*\*\*(.+?)\*\*\*/g, (_, content) => toBoldItalic(content));
 
@@ -125,6 +133,11 @@ export function markdownToUnicode(text: string): string {
 
   // Italic (_text_)
   result = result.replace(/_(.+?)_/g, (_, content) => toItalic(content));
+
+  // Step 3: Restore code blocks
+  codeBlocks.forEach((code, index) => {
+    result = result.replace(`\u0000CODE${index}\u0000`, code);
+  });
 
   return result;
 }
@@ -157,6 +170,9 @@ export function formatForLinkedIn(markdown: string): string {
 
   // Convert markdown formatting to Unicode
   formatted = markdownToUnicode(formatted);
+
+  // Remove backticks from inline code (LinkedIn doesn't render monospace)
+  formatted = formatted.replace(/`([^`]+)`/g, '$1');
 
   // Convert lists to bullets
   formatted = listToBullets(formatted);
