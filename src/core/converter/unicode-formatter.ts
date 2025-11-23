@@ -180,12 +180,25 @@ export function formatForLinkedIn(markdown: string): string {
   // Ensure double newlines for paragraph separation
   formatted = formatted.replace(/\n{1}(?!\n)/g, '\n\n');
 
-  // Extract and move hashtags to end
+  // Step 1: Protect hex color codes (#RGB, #RRGGBB) from hashtag extraction
+  const hexCodes: string[] = [];
+  formatted = formatted.replace(/#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/g, (match) => {
+    const placeholder = `\u0001HEX${hexCodes.length}\u0001`;
+    hexCodes.push(match);
+    return placeholder;
+  });
+
+  // Step 2: Extract and move real hashtags to end
   const hashtagRegex = /#[\w]+/g;
   const hashtags: string[] = [];
   formatted = formatted.replace(hashtagRegex, (match) => {
     hashtags.push(match);
     return '';
+  });
+
+  // Step 3: Restore hex color codes
+  hexCodes.forEach((hex, index) => {
+    formatted = formatted.replace(`\u0001HEX${index}\u0001`, hex);
   });
 
   if (hashtags.length > 0) {

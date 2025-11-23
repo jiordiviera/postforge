@@ -168,5 +168,27 @@ This is my post with *key points*:
       expect(result).toContain('kfjfjjfjfjfj');
       expect(result).toContain('code');
     });
+
+    it('should not treat hex color codes as hashtags', () => {
+      const input = `Color palette:
+- Primary: #671de7
+- Secondary: #5cbaf0
+- Background: #f6f9f8
+
+#design #branding`;
+
+      const result = formatForLinkedIn(input);
+
+      // Hex codes should stay in place
+      expect(result).toContain('#671de7');
+      expect(result).toContain('#5cbaf0');
+      expect(result).toContain('#f6f9f8');
+
+      // Real hashtags should be moved to end
+      expect(result).toMatch(/#design #branding$/);
+
+      // Hex codes should NOT be at the end
+      expect(result).not.toMatch(/#671de7.*$/);
+    });
   });
 });
