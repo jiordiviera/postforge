@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PostForge
 
-## Getting Started
+> Transform your markdown into beautifully formatted LinkedIn posts
 
-First, run the development server:
+## Why?
+
+LinkedIn doesn't support markdown. Your `**bold**` text shows up with asterisks, making posts look unprofessional.
+
+PostForge converts markdown to Unicode characters that LinkedIn renders natively:
+
+```
+**bold**    → 𝗯𝗼𝗹𝗱
+*italic*    → 𝘪𝘵𝘢𝘭𝘪𝘤
+# Heading   → 𝗛𝗲𝗮𝗱𝗶𝗻𝗴
+- List      → • List
+```
+
+## Features
+
+- Real-time preview
+- One-click publish to LinkedIn/X
+- Auto-save
+- Keyboard shortcuts
+- Smart hashtag handling
+- Hex color preservation
+
+## Quick Start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Write in markdown
+2. Preview updates live
+3. Click "Publish now" or "Copy post"
 
-## Learn More
+### Shortcuts
 
-To learn more about Next.js, take a look at the following resources:
+- `Cmd/Ctrl + B` - Bold
+- `Cmd/Ctrl + I` - Italic
+- `Cmd/Ctrl + Shift + C` - Code
+- `Cmd/Ctrl + Enter` - Copy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js 16
+- Tailwind CSS v4
+- Radix UI
+- Vitest
+- Bun
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+bun test         # Run tests
+bun typecheck    # Type check
+bun lint         # Lint
+bun build        # Build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## How It Works
+
+1. Parse markdown syntax
+2. Protect inline code & hex colors
+3. Transform to Unicode symbols
+4. Restore protected elements
+5. Move hashtags to end
+6. Generate preview
+
+The conversion uses Unicode mathematical alphanumeric symbols (U+1D400 to U+1D7FF).
+
+## Contributing
+
+1. Fork the repo
+2. Create a branch
+3. Make your changes
+4. Add tests
+5. Open a PR
+
+## License
+
+MIT
+
+---
+
+Built by [@jiordiviera](https://github.com/jiordiviera) ✨
